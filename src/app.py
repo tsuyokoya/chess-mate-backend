@@ -1,6 +1,7 @@
 from flask import Flask, redirect, request, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
+from models import db, connect_db, User, Stat
 
 app = Flask(__name__)
 
@@ -12,6 +13,7 @@ else:
     app.config.from_object("config.DevelopmentConfig")
 
 debug = DebugToolbarExtension(app)
+connect_db(app)
 
 
 @app.route("/")
