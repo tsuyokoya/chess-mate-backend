@@ -32,6 +32,9 @@ class User(db.Model):
     @classmethod
     def register(cls, username, password):
         """Registers user, hashes password, and adds user to database."""
+        duplicate_user_found = User.check_duplicate_username(username)
+        if duplicate_user_found:
+            return {"failed": "username taken"}
 
         hashed_pwd = bcrypt.generate_password_hash(password).decode("UTF-8")
 
@@ -42,7 +45,15 @@ class User(db.Model):
 
         db.session.add(user)
         db.session.commit()
-        return user
+        return {"success": "user created"}
+
+    @classmethod
+    def check_duplicate_username(cls, username):
+        """Checks whether the username is already taken"""
+        user = cls.query.filter_by(username=username).all()
+        if len(user) > 0:
+            return True
+        return False
 
 
 # - stats
