@@ -2,8 +2,11 @@ from flask import Flask, redirect, request, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
 from models import db, connect_db, User, Stat
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config["CORS_HEADERS"] = "Content-Type"
 
 if app.config["ENV"] == "production":
     app.config.from_object("config.ProductionConfig")
@@ -17,6 +20,13 @@ connect_db(app)
 db.create_all()
 
 
-@app.route("/")
-def home_page():
-    return "home"
+@app.route("/login", methods=["POST"])
+def login_user():
+    return "login"
+
+
+@app.route("/signup", methods=["POST"])
+@cross_origin()
+def signup_user():
+    print("SIGNUP")
+    return "signup success"
