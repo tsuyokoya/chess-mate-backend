@@ -21,6 +21,7 @@ db.create_all()
 
 
 @app.route("/login", methods=["POST"])
+@cross_origin()
 def login_user():
     return "login"
 
@@ -28,5 +29,7 @@ def login_user():
 @app.route("/signup", methods=["POST"])
 @cross_origin()
 def signup_user():
-    print("SIGNUP")
-    return "signup success"
+    username = request.json["username"]
+    password = request.json["password"]
+    res = User.register(username, password)
+    return res
