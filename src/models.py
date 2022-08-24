@@ -50,10 +50,22 @@ class User(db.Model):
     @classmethod
     def check_duplicate_username(cls, username):
         """Checks whether the username is already taken"""
-        user = cls.query.filter_by(username=username).all()
-        if len(user) > 0:
+        user = cls.query.filter_by(username=username).first()
+        if user:
             return True
         return False
+
+    @classmethod
+    def authenticate(cls, username, password):
+        """Find user with `username` and `password`"""
+        user = cls.query.filter_by(username=username).first()
+
+        if user:
+            is_auth = bcrypt.check_password_hash(user.password, password)
+            if is_auth:
+                return {"success": "successfully logged in"}
+
+        return {"failed": "invalid username/password combination"}
 
 
 # - stats
